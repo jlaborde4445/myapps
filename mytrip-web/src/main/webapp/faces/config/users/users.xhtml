@@ -1,0 +1,62 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:body>
+
+        <p:spacer height="10px" />
+
+        <p:dataTable id="usertable" var="user" value="#{userController.users}" paginator="true" rows="10" paginatorPosition="bottom" scrollHeight="300" scrollable="true"
+                     rowKey="#{user.idUser}" selection="#{userController.selectedItem}" selectionMode="single">
+
+            <p:ajax event="rowSelect" process="@this" update="footertable"/>
+
+            <p:column width="20%">
+                <f:facet name="header">
+                    <h:outputText value="Usuario" />
+                </f:facet>
+                <h:outputText value="#{user.username}" />
+            </p:column>
+
+            <p:column width="35%">
+                <f:facet name="header">
+                    <h:outputText value="Nombre" />
+                </f:facet>
+                <h:outputText value="#{user.name}" />
+            </p:column>
+
+            <p:column width="45%">
+                <f:facet name="header">
+                    <h:outputText value="Apellido" />
+                </f:facet>
+                <h:outputText value="#{user.surname}" />
+            </p:column>
+
+            <f:facet name="footer">
+
+                <h:panelGroup layout="block" id="footertable">
+
+                    <p:commandButton icon="ui-icon-plus" action="#{userController.createUser()}" update=":form:dialogUser usertable" process="usertable" oncomplete="dialogInfoUser.show()">
+                        <f:setPropertyActionListener target="#{userController.newItem}" value="true" />
+                        <p:resetInput target=":form:dialogUser" />
+                    </p:commandButton>
+                    <p:spacer width="2px"/>
+
+                    <p:commandButton icon="ui-icon-pencil" disabled="#{empty userController.selectedItem or empty userController.selectedItem.idUser}" update=":form:dialogUser" process="usertable @this" oncomplete="dialogInfoUser.show()">
+                        <f:setPropertyActionListener target="#{userController.newItem}" value="false" />
+                    </p:commandButton>    
+                    <p:spacer width="2px"/>
+
+                    <p:commandButton icon="ui-icon-trash" disabled="#{empty userController.selectedItem or empty userController.selectedItem.idUser}" onclick="confirmationUser.show();" type="button" />
+                    <h:outputText value="|" />
+
+                    <p:commandButton icon="ui-icon-refresh" update="usertable" />
+
+                </h:panelGroup>
+
+            </f:facet>
+
+        </p:dataTable>
+
+    </h:body>
+</html>

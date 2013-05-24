@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets" template="/resources/templates/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:fnc="http://cacho.com/functions">
+    
+    <ui:param name="activeIndex" value="3" />
+
+    <ui:define name="content">
+        
+        <p:spacer height="10px" />
+        
+        <p:panel header="Configuraciones del Sistema" toggleable="true">
+        
+            <p:tabView id="tabView" effect="scale">
+                
+                <p:tab title="Usuarios" disabled="#{fnc:ifNoneGranted('admin')}">
+                    <ui:include src="users/users.xhtml" />          
+                </p:tab>
+                
+                <p:tab title="Destinos">
+                    <ui:include src="places/places.xhtml" />
+                </p:tab>
+                
+                <p:tab title="Hoteles">
+                    <ui:include src="hotels/hotels.xhtml" />
+                </p:tab>
+                
+            </p:tabView>
+            
+            <!-- Dialog for Users -->
+            <p:dialog id="dialogUser" header="Informacion del Usuario" widgetVar="dialogInfoUser" resizable="false" showEffect="fade" modal="true">
+
+                <h:panelGrid id="gridformUser" columns="2" cellpadding="5" rendered="#{not empty userController.selectedItem}">
+
+                    <p:outputLabel value="Usuario" for="inputuser" />
+                    <p:inputText id="inputuser" value="#{userController.selectedItem.username}" required="true" style="width: 150px" />
+
+                    <p:outputLabel value="Clave" for="inputpassword" />
+                    <p:inputText id="inputpassword" type="password" value="#{userController.selectedItem.password}" required="true" style="width: 150px" />
+
+                    <p:outputLabel value="Nombre" for="inputname" />
+                    <p:inputText id="inputname" value="#{userController.selectedItem.name}" required="true" style="width: 250px" />
+
+                    <p:outputLabel value="Apellido" for="inputsurname" />
+                    <p:inputText id="inputsurname" value="#{userController.selectedItem.surname}" required="true" style="width: 250px" />
+
+                </h:panelGrid>
+
+                <f:facet name="footer">
+
+                    <p:commandButton value="Confirmar" process="dialogUser" action="#{userController.saveUser()}" update="tabView:usertable gridformUser" />
+
+                    <p:commandButton value="Cancelar" onclick="dialogInfoUser.hide();" type="button" />
+
+                </f:facet>
+
+            </p:dialog>
+
+            <p:confirmDialog message="Está seguro que desea realizar esta acción?" header="Confirmación" severity="alert" widgetVar="confirmationUser">
+
+                <p:commandButton value="Sí" process="@this" update="tabView:usertable" oncomplete="confirmationUser.hide()" action="#{userController.deleteUser()}" />
+
+                <p:commandButton value="No" onclick="confirmationUser.hide();" type="button" /> 
+
+            </p:confirmDialog>
+            
+            <!-- Dialog for Places -->
+            <p:dialog id="dialogPlaces" header="Informacion del Lugar" widgetVar="dialogInfoPlaces" resizable="false" showEffect="fade" modal="true">
+
+                <h:panelGrid id="gridformPlaces" columns="3" cellpadding="5" rendered="#{not empty placesController.selectedItem}">
+
+                    <p:outputLabel value="Nombre del País" for="inputpais" />
+                    <p:inputText id="inputpais" value="#{placesController.selectedItem.country}" required="true" style="width: 150px" />
+                    <p:spacer width="0"/>
+
+                    <p:outputLabel value="Nombre de la Ciudad" for="inputcity" />
+                    <p:inputText id="inputcity" value="#{placesController.selectedItem.place}" required="true" style="width: 250px" />
+                    <p:spacer width="0"/>
+
+                    <p:outputLabel value="Geolocalización" />
+                    <p:commandButton action="#{placesController.updateMapView()}" icon="ui-icon-pin-s" process=":form:mapView gridformPlaces" update=":form:mapView gridformPlaces"/>
+
+                </h:panelGrid>
+
+                <f:facet name="footer">
+
+                    <p:commandButton value="Confirmar" process="dialogPlaces" action="#{placesController.savePalce()}" update="tabView:placetable gridformPlaces" />
+
+                    <p:commandButton value="Cancelar" onclick="dialogInfoPlaces.hide();" type="button" />
+
+                </f:facet>
+
+            </p:dialog>
+            
+            <p:confirmDialog message="Está seguro que desea realizar esta acción?" header="Confirmación" severity="alert" widgetVar="confirmationPlace">
+
+                <p:commandButton value="Sí" process="@this" update="tabView:placetable" oncomplete="confirmationPlace.hide()" action="#{placesController.deletePlace()}" />
+
+                <p:commandButton value="No" onclick="confirmation.hide();" type="button" />
+
+            </p:confirmDialog>
+            
+            <p:dialog id="dlgMap" header="Por favor selecciona la ubicación de la Ciudad" widgetVar="dlg" width="1000" height="500" modal="true">
+
+                <p:gmap id="mapView" center="42.381542, 22.122893" zoom="4" type="ROADMAP" style="width:100%; height:100%;" model="#{placesController.mapModel}"  widgetVar="mymap">
+
+                    <p:ajax event="pointSelect" listener="#{placesController.onPointSelect}" update="mapView" />
+
+                </p:gmap>
+
+                <f:facet name="footer">
+
+                    <p:commandButton type="button" value="Aceptar" onclick="dlg.hide();" />
+
+                </f:facet>
+
+            </p:dialog>
+            
+            <!-- Dialog for Hotels -->
+            <p:dialog id="dialogHotels" header="Informacion del Hotel" widgetVar="dialogInfoHotels" resizable="false" showEffect="fade" modal="true">
+
+                <h:panelGrid id="gridformHotels" columns="2" cellpadding="5" rendered="#{not empty hotelsController.selectedItem}">
+
+                    <p:outputLabel value="Hotel:" for="inputhotel" />
+                    <p:inputText id="inputhotel" value="#{hotelsController.selectedItem.name}" required="true" style="width: 200px" maxlength="128" />
+
+                    <p:outputLabel value="Ubicación:" for="selectPlace" />
+                    <p:selectOneMenu id="selectPlace" value="#{hotelsController.selectedItem.idPlace}" filter="true" filterMatchMode="contains" converter="entityConverter" styleClass="my-trip-with-med" required="true">
+                        <f:selectItem itemValue="" itemLabel="Seleccione uno..." />
+                        <f:selectItems value="#{requestController.getAllPlaces()}" var="place" itemValue="#{place}" itemLabel="#{place.country} - #{place.place}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="Dirección:" for="inputaddress" />
+                    <p:inputTextarea id="inputaddress" value="#{hotelsController.selectedItem.address}" required="true" style="width: 250px" maxlength="255" counter="counter" counterTemplate="{0} caracteres restantes." autoResize="false" />
+
+                    <p:spacer />
+                    <h:outputText id="counter" style="float: right;" />
+
+                    <p:outputLabel value="Links:" for="inputlink" />
+                    <p:inputTextarea id="inputlink" value="#{hotelsController.selectedItem.link}" required="true" style="width: 250px" maxlength="1024" autoResize="false" />
+
+                </h:panelGrid>
+
+                <p:panel header="Condicones">
+
+                    <h:panelGrid id="gridCondHotels" columns="2">
+
+                        <p:outputLabel value="Entrada:" for="inputfromcheckin" />
+                        <h:panelGroup>
+                            <p:spacer width="3px"/>
+                            <p:calendar id="inputfromcheckin" value="#{hotelsController.selectedItem.timeFromCheckIn}" required="true" pattern="HH:mm" timeOnly="true" showOn="button" readonlyInput="true" showButtonPanel="true" size="5" />
+                            <p:outputLabel value=" hasta:" for="inputtocheckin" />
+                            <p:spacer width="3px"/>
+                            <p:calendar id="inputtocheckin" value="#{hotelsController.selectedItem.timeToCheckIn}" required="true" pattern="HH:mm" timeOnly="true" showOn="button" readonlyInput="true" showButtonPanel="true" size="5"/>
+                        </h:panelGroup>
+
+                        <p:outputLabel value="Salida:" for="inputfromcheckout" />
+                        <h:panelGroup>
+                            <p:spacer width="3px"/>
+                            <p:calendar id="inputfromcheckout" value="#{hotelsController.selectedItem.timeFromCheckOut}" required="true" pattern="HH:mm" timeOnly="true" showOn="button" readonlyInput="true" showButtonPanel="true" size="5" />
+                            <p:outputLabel value=" hasta:" for="inputtocheckout" />
+                            <p:spacer width="3px"/>
+                            <p:calendar id="inputtocheckout" value="#{hotelsController.selectedItem.timeToCheckOut}" required="true" pattern="HH:mm" timeOnly="true" showOn="button" readonlyInput="true" showButtonPanel="true" size="5"/>
+                        </h:panelGroup>
+
+                    </h:panelGrid>
+
+                </p:panel>     
+
+                <f:facet name="footer">
+
+                    <p:commandButton value="Confirmar" action="#{hotelsController.saveHotel()}" process="dialogHotels" update="tabView:hoteltable gridformHotels gridCondHotels" />
+
+                    <p:commandButton value="Cancelar" onclick="dialogInfoHotels.hide();" type="button" />
+
+                </f:facet>
+
+            </p:dialog>
+
+            <p:confirmDialog message="Está seguro que desea realizar esta acción?" header="Confirmación" severity="alert" widgetVar="confirmationHotels">
+
+                <p:commandButton value="Sí" process="@this" update="tabView:hoteltable" oncomplete="confirmationHotels.hide()" action="#{hotelsController.deleteHotel()}" />
+
+                <p:commandButton value="No" onclick="confirmationHotels.hide();" type="button" /> 
+
+            </p:confirmDialog>
+
+        </p:panel>
+        
+    </ui:define>
+
+</ui:composition>

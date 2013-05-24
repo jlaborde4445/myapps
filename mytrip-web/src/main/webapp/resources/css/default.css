@@ -1,0 +1,73 @@
+body {
+    margin: 10px;
+    padding: 0;
+    color: #616161;
+    border: 1px solid #56585C;
+    background-color: #dddddd;
+    min-width: 1200px;
+}
+
+h1, h2, h3 {
+    margin: 0px 20px 15px 5px;
+    font: normal 45px/1.2 'Bree Serif', Georgia, serif;
+    clear: left;
+}
+
+h2 {
+    font-size: 24px;
+    color: #8b2;
+}
+
+#list3 ul { 
+    list-style-image: url('/mytrip/resources/images/background/arrow.png'); 
+    font-size: 16px;
+}
+
+#list3 ul li { 
+    line-height:30px;
+}
+
+/** Primefaces components **/
+
+.ui-panelgrid td, .ui-panelgrid tr{
+    border: none !important;
+}
+
+.ui-datatable .ui-datatable-footer {
+    text-align: left !important;
+}
+
+.ui-dialog-footer {
+    text-align: right !important;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+    text-align: right !important;
+}
+
+.my-trip-with-med{
+    width: 200px !important;
+}
+
+.td-center{
+    text-align: center;
+}
+
+.td-right{
+    text-align: right;
+}
+
+.text-bold{
+    font-weight: bold;
+}
+
+.block{
+    display: block;
+}
+
+@font-face{
+    font-family: architecture;
+    src: url(/mytrip/resources/css/archibld.ttf);
+}
+
+/** End components **/

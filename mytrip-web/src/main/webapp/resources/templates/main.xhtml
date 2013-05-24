@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <f:view locale="es">
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <h:outputStylesheet library="css" name="default.css" />
+            <h:outputStylesheet library="css" name="cssLayout.css" />
+            <h:outputScript library="javascript" name="prime-utils.js" />
+            <h:outputScript library="javascript" name="primefaces/all-i18n.js" />
+            <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
+            <title>My Trip</title>
+        </h:head>
+
+        <h:body class="ui-corner-all">
+            
+            <p:ajaxStatus onstart="statusDialog.show();" onsuccess="statusDialog.hide();"/>
+            
+            <p:dialog modal="true" widgetVar="statusDialog" header="Aguarde un instante ..." draggable="false" closable="false" resizable="false">  
+                <p:graphicImage library="images" name="icons/ajaxloadingbar.gif" />  
+            </p:dialog>
+
+            <div id="top" class="top ui-widget ui-widget-header ui-corner-top">
+                <h:panelGroup style="float: right;">
+                    <h:outputText value=" | " />
+                    <h:outputText value="usuario: #{p:remoteUser()}"/>
+                    <h:outputText value=" | " />
+                    <!--<h:outputLink value="#{request.contextPath}/logout">Logout</h:outputLink>-->
+                </h:panelGroup>
+                <h1 class="top-title">My Trip Web</h1>
+            </div>
+
+            <div>
+                <div id="content" class="left_content ui-corner-bottom">
+
+                    <h:form id="form" prependId="false">
+
+                        <p:growl id="growl" showDetail="true" sticky="true" showSummary="false" autoUpdate="true" />
+
+                        <p:tabMenu activeIndex="#{activeIndex}">
+                            
+                            <p:menuitem value="Home" url="/home.jsf" icon="ui-icon-home" />
+                            
+                            <p:menuitem value="Mi Itinerario" url="/faces/travels/myTravels.jsf" icon="ui-icon-extlink" />
+                            
+                            <p:menuitem  value="Configuraciones" url="/faces/config/config.jsf" icon="ui-icon-wrench" />
+
+                        </p:tabMenu>
+
+                        <ui:insert name="content">
+
+                        </ui:insert>
+
+                    </h:form>
+
+                </div>
+            </div>
+            
+            <div id="bottom" class="bottom ui-widget ui-widget-header ui-corner-bottom">
+                <h4>design by Jorge Laborde</h4>
+            </div>
+            
+        </h:body>
+    </f:view>
+</html>

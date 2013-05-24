@@ -1,0 +1,46 @@
+/** Primefaces components **/
+
+.ui-panelgrid td, .ui-panelgrid tr{
+    border: none !important;
+}
+
+.ui-datatable .ui-datatable-footer {
+    text-align: left !important;
+}
+
+.ui-dialog-footer {
+    text-align: right !important;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+    text-align: right !important;
+}
+
+.my-trip-with-med{
+    width: 200px !important;
+}
+
+.td-center{
+    text-align: center;
+}
+
+.td-right{
+    text-align: right;
+}
+
+.text-bold{
+    font-weight: bold;
+}
+
+.block{
+    display: block;
+}
+
+#list3 ul { 
+    list-style-image: url('/mytrip/resources/images/background/arrow.png'); 
+    font-size: 16px;
+}
+
+#list3 ul li { 
+    line-height:30px;
+}

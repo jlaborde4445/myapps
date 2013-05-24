@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:fnc="http://cacho.com/functions">
+    <h:body>        
+        <p:spacer height="10px" />
+
+        <p:dataTable id="hoteltable" var="hotel" value="#{hotelsController.hotels}" paginator="true" rows="15" paginatorPosition="bottom" scrollable="true" scrollHeight="300"
+                     rowKey="#{hotel.idHotel}" selection="#{hotelsController.selectedItem}" selectionMode="single">
+
+            <p:ajax event="rowSelect" process="@this" update="footertable"/>
+
+            <p:column width="250">
+                <f:facet name="header">
+                    <h:outputText value="Hotel" />
+                </f:facet>
+                <h:outputText value="#{hotel.name}" />
+            </p:column>
+
+            <p:column width="200">
+                <f:facet name="header">
+                    <h:outputText value="Ubicación" />
+                </f:facet>
+                <h:outputText value="#{hotel.idPlace.country} - #{hotel.idPlace.place}" />
+            </p:column>
+
+            <p:column width="450">
+                <f:facet name="header">
+                    <h:outputText value="Dirección" />
+                </f:facet>
+                <h:outputText value="#{hotel.address}" />
+            </p:column>
+
+            <p:column width="150" styleClass="td-center">
+                <f:facet name="header">
+                    <h:outputText value="Check In" />
+                </f:facet>
+                <h:outputText value="#{hotel.timeFromCheckIn} - #{hotel.timeToCheckIn}" />
+            </p:column>
+
+            <p:column width="150" styleClass="td-center">
+                <f:facet name="header">
+                    <h:outputText value="Check Out" />
+                </f:facet>
+                <h:outputText value="#{hotel.timeFromCheckOut} - #{hotel.timeToCheckOut}" />
+            </p:column>
+
+            <p:column width="250" style="white-space: pre-wrap;">
+                <f:facet name="header">
+                    <h:outputText value="Enlace" />
+                </f:facet>
+                <h:outputText value="#{fnc:splitLinks(hotel.link)}" escape="false" />
+            </p:column>
+
+            <f:facet name="footer">
+
+                <h:panelGroup layout="block" id="footertable">
+
+                    <p:commandButton icon="ui-icon-plus" action="#{hotelsController.createHotel()}" update=":form:dialogHotels hoteltable" process="hoteltable" oncomplete="dialogInfoHotels.show()">
+                        <f:setPropertyActionListener target="#{hotelsController.newItem}" value="true" />
+                        <p:resetInput target=":form:dialogHotels" />
+                    </p:commandButton>
+                    <p:spacer width="2px"/>
+
+                    <p:commandButton icon="ui-icon-pencil" disabled="#{empty hotelsController.selectedItem or empty hotelsController.selectedItem.idPlace}" update=":form:dialogHotels" process="hoteltable @this" oncomplete="dialogInfoHotels.show()">
+                        <f:setPropertyActionListener target="#{hotelsController.newItem}" value="false" />
+                    </p:commandButton>
+                    <p:spacer width="2px"/>
+
+                    <p:commandButton icon="ui-icon-trash" disabled="#{empty hotelsController.selectedItem or empty hotelsController.selectedItem.idPlace}" onclick="confirmationHotels.show();" type="button" />
+                    <h:outputText value="|" />
+
+                    <p:commandButton icon="ui-icon-refresh" update="hoteltable" />
+
+                </h:panelGroup>
+
+            </f:facet>
+
+        </p:dataTable>
+
+    </h:body>
+</html>

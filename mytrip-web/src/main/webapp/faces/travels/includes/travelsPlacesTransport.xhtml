@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    
+    <p:spacer height="20px" />
+
+    <h:panelGroup id="itemsTravelTransport" layout="block">
+
+        <p:panel id="panelTransportDetail" header="#{travelsController.selectedItemPlace.idPlaceOutput.place} a #{travelsController.selectedItemPlace.idPlaceArrival.place} - Mi Transporte" rendered="#{not (empty travelsController.selectedItemPlace or empty travelsController.selectedItemPlace.id) }" toggleable="true">
+
+            <h:panelGrid columns="11" cellpadding="5" rendered="#{not empty travelsController.selectedItemTravelPlaceTransport}">
+            
+                <p:outputLabel value="Transporte:" styleClass="text-bold" />
+                <p:graphicImage library="images" name="transport/#{travelsController.selectedItemTravelPlaceTransport.type}.png" />
+                
+                <p:spacer width="50" height="1"/>
+                
+                <p:outputLabel value="Partida:" styleClass="text-bold" />
+                <h:outputText value="#{travelsController.selectedItemTravelPlaceTransport.idTravelPlace.idPlaceOutput.country} - #{travelsController.selectedItemTravelPlaceTransport.idTravelPlace.idPlaceOutput.place}" />
+
+                <p:spacer width="50" height="1"/>
+                
+                <h:panelGroup>
+                    <p:outputLabel value="Fecha:" styleClass="text-bold" />
+                    <p:spacer width="20" />
+                    <h:outputText value="#{travelsController.selectedItemTravelPlaceTransport.idTravelPlace.startingDate}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </h:panelGroup>
+                <p:spacer width="10" height="1" />
+                
+                <p:spacer width="50" height="1" />
+                
+                <h:panelGroup>
+                    <p:outputLabel value="Hora:" styleClass="text-bold" />
+                    <p:spacer width="20" />
+                    <h:outputText value="#{travelsController.selectedItemTravelPlaceTransport.startingTime}" />
+                </h:panelGroup>
+                <p:spacer width="10" height="1" />
+                
+                <p:outputLabel value="Companía:" styleClass="text-bold" />
+                <h:outputText value="#{travelsController.selectedItemTravelPlaceTransport.company}" />
+                
+                <p:spacer width="50" height="1"/>
+             
+                <p:outputLabel value="Arribo:" styleClass="text-bold" />
+                <h:outputText value="#{travelsController.selectedItemTravelPlaceTransport.idTravelPlace.idPlaceArrival.country} - #{travelsController.selectedItemTravelPlaceTransport.idTravelPlace.idPlaceArrival.place}" />
+                
+                <p:spacer width="50" height="1"/>
+                
+                <h:panelGroup>
+                    <p:outputLabel value="Fecha:" styleClass="text-bold" />
+                    <p:spacer width="20" />
+                    <h:outputText value="#{travelsController.selectedItemTravelPlaceTransport.idTravelPlace.arrivalDate}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </h:panelGroup>
+                <p:spacer width="10" height="1" />
+                
+                <p:spacer width="50" height="1"/>
+                
+                <h:panelGroup>
+                    <p:outputLabel value="Hora:" styleClass="text-bold" />
+                    <p:spacer width="20" />
+                    <h:outputText value="#{travelsController.selectedItemTravelPlaceTransport.arrivalTime}" />
+                </h:panelGroup>
+                <p:spacer width="10" height="1" />
+                
+                <p:outputLabel value="Ticket:" styleClass="text-bold" />
+                <p:commandButton ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthickstop-1-s" disabled="#{(empty travelsController.selectedItemTravelPlaceTransport) or (empty travelsController.selectedItemTravelPlaceTransport.ticket)}" immediate="true" process="@this">  
+                    <p:fileDownload value="#{travelsController.getFileTransport()}" />  
+                </p:commandButton>
+                
+                <p:spacer width="50" height="1"/>
+                
+                <p:outputLabel value="Costo Total:" styleClass="text-bold" />
+                <h:outputText value="US$ #{travelsController.selectedItemTravelPlaceTransport.cost}" />
+                
+                <p:spacer width="50" height="1"/>
+                
+                <p:outputLabel value="Descripción del Pago:" styleClass="text-bold" />
+                <h:outputText value="#{travelsController.selectedItemTravelPlaceTransport.paymentDescription}" /> 
+
+            </h:panelGrid>  
+            
+            <f:facet name="footer">
+                
+                <p:commandButton icon="ui-icon-plus" action="#{travelsController.createTravelPlaceTransport()}" process="@this" update="dialogTransport" oncomplete="dialogInfoTransport.show()" disabled="#{not empty travelsController.selectedItemTravelPlaceTransport}">
+                    <f:setPropertyActionListener target="#{travelsController.newItemPlaceTransport}" value="true" />
+                    <p:resetInput target="gridformHotel" />
+                </p:commandButton>
+                <p:spacer width="2px"/>
+                
+                <p:commandButton icon="ui-icon-pencil" disabled="#{empty travelsController.selectedItemTravelPlaceTransport or empty travelsController.selectedItemTravelPlaceTransport.id}" process="@this" update="dialogTransport" oncomplete="dialogInfoTransport.show()">
+                    <f:setPropertyActionListener target="#{travelsController.newItemPlaceTransport}" value="false" />
+                </p:commandButton>
+                <p:spacer width="2px"/>
+                
+                <p:commandButton icon="ui-icon-trash"  disabled="#{empty travelsController.selectedItemTravelPlaceTransport or empty travelsController.selectedItemTravelPlaceTransport.id}" onclick="confirmationTransport.show();" type="button" />
+                <h:outputText value="|" />
+                
+                <p:spacer width="2px"/>
+                <p:commandButton icon="ui-icon-document" process="@this" oncomplete="dialogFileTransport.show()" disabled="#{empty travelsController.selectedItemTravelPlaceTransport}" />
+                
+            </f:facet>
+            
+        </p:panel>
+        
+        <p:dialog id="dialogTransport" header="Información del Transporte" widgetVar="dialogInfoTransport" resizable="false" showEffect="fade" modal="true">
+
+            <h:panelGrid id="gridformTransport" columns="2" cellpadding="5" rendered="#{not empty travelsController.selectedItemPlace}">
+                
+                <p:outputLabel value="Transporte:" for="selectTransport" />
+                <p:selectOneMenu id="selectTransport" value="#{travelsController.selectedItemTravelPlaceTransport.type}" styleClass="my-trip-with-med" required="true">
+                    <f:selectItem itemValue="" itemLabel="Seleccione uno..." />
+                    <f:selectItem itemValue="A" itemLabel="Avíon" />
+                    <f:selectItem itemValue="F" itemLabel="Ferri" />
+                    <f:selectItem itemValue="T" itemLabel="Tren" />
+                </p:selectOneMenu>
+                
+                <p:outputLabel value="Companía:" for="inputcompany" />
+                <p:inputText id="inputcompany" value="#{travelsController.selectedItemTravelPlaceTransport.company}" required="true" style="width: 250px" />
+                
+                <p:outputLabel value="Hora de Partida:" for="timeStart" />
+                <p:calendar id="timeStart" value="#{travelsController.selectedItemTravelPlaceTransport.startingTime}" required="true" pattern="HH:mm" timeOnly="true" showOn="button" readonlyInput="true" showButtonPanel="true" size="5" />
+                
+                <p:outputLabel value="Hora de Arribo:" for="timeArrival" />
+                <p:calendar id="timeArrival" value="#{travelsController.selectedItemTravelPlaceTransport.arrivalTime}" required="true" pattern="HH:mm" timeOnly="true" showOn="button" readonlyInput="true" showButtonPanel="true" size="5" />
+                
+                <p:outputLabel value="Costo:" for="inputCostTransport" style="white-space: nowrap" />
+                <pe:inputNumber id="inputCostTransport" value="#{travelsController.selectedItemTravelPlaceTransport.cost}" symbol="US$ " decimalPlaces="2" thousandSeparator="" styleClass="my-trip-with-med" required="true">  
+                    <f:validateDoubleRange minimum="0"/>  
+                </pe:inputNumber>
+                
+                <p:outputLabel value="Descripción:" />
+                <p:inputTextarea value="#{travelsController.selectedItemTravelPlaceTransport.paymentDescription}" style="width: 250px" maxlength="255" counter="counter3" counterTemplate="{0} caracteres restantes." />
+
+                <p:spacer />
+                <h:outputText id="counter3" style="float: right;" />
+                
+            </h:panelGrid>
+
+            <f:facet name="footer">
+
+                <p:commandButton value="Confirmar" action="#{travelsController.saveTravelPlaceTransport()}" process="gridformTransport @this" update="gridformTransport" partialSubmit="true" />
+
+                <p:commandButton value="Cancelar" onclick="dialogInfoTransport.hide();" type="button" />
+
+            </f:facet>
+
+        </p:dialog>
+        
+        <p:dialog header="Ticket de Compra" widgetVar="dialogFileTransport" resizable="false" showEffect="fade" modal="true" width="500">
+            
+            <h:form enctype="multipart/form-data">  
+  
+                <p:fileUpload fileUploadListener="#{travelsController.handleFileUploadTransport}" mode="advanced" sizeLimit="500000" cancelLabel="Canelar" label="Seleccionar" uploadLabel="Subir" allowTypes="/(\.|\/)(pdf)$/" />  
+  
+            </h:form>
+            
+        </p:dialog>
+ 
+        <p:confirmDialog message="Está seguro que desea realizar esta acción?" header="Confirmación" severity="alert" widgetVar="confirmationTransport">
+
+            <p:commandButton value="Sí" process="@this" update="itemsTravelTransport" oncomplete="confirmationTransport.hide()" action="#{travelsController.deleteTravelPlaceTransport()}" />
+
+            <p:commandButton value="No" onclick="confirmationTransport.hide();" type="button" /> 
+
+        </p:confirmDialog>
+
+    </h:panelGroup>
+    
+</html>

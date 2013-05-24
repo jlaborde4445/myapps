@@ -1,0 +1,73 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:body>
+
+        <p:spacer height="10px" />
+
+        <p:dataTable id="placetable" var="place" value="#{placesController.places}" paginator="true" rows="15" paginatorPosition="bottom" scrollHeight="300" scrollable="true"
+                     rowKey="#{place.idPlace}" selection="#{placesController.selectedItem}" selectionMode="single">
+
+            <p:ajax event="rowSelect" process="@this" update="footertable"/>
+
+            <p:column width="34%">
+                <f:facet name="header">
+                    <h:outputText value="Nombre del País" />
+                </f:facet>
+                <h:outputText value="#{place.country}" />
+            </p:column>
+
+            <p:column width="52%">
+                <f:facet name="header">
+                    <h:outputText value="Nombre de la Ciudad" />
+                </f:facet>
+                <h:outputText value="#{place.place}" />
+            </p:column>
+
+            <p:column width="7%" styleClass="td-right">
+                <f:facet name="header">
+                    <h:outputText value="Latitud" />
+                </f:facet>
+                <h:outputText value="#{place.latitude}">
+                    <f:convertNumber maxFractionDigits="4" minFractionDigits="4" />
+                </h:outputText>
+            </p:column>
+
+            <p:column width="7%" styleClass="td-right">
+                <f:facet name="header">
+                    <h:outputText value="Longitud" />
+                </f:facet>
+                <h:outputText value="#{place.longitude}">
+                    <f:convertNumber maxFractionDigits="4" minFractionDigits="4" />
+                </h:outputText>
+            </p:column>
+
+            <f:facet name="footer">
+
+                <h:panelGroup layout="block" id="footertable">
+
+                    <p:commandButton icon="ui-icon-plus" action="#{placesController.createPlace()}" update=":form:dialogPlaces placetable" process="placetable" oncomplete="dialogInfoPlaces.show()">
+                        <f:setPropertyActionListener target="#{placesController.newItem}" value="true" />
+                        <p:resetInput target=":form:dialogPlaces" />
+                    </p:commandButton>
+                    <p:spacer width="2px"/>
+
+                    <p:commandButton icon="ui-icon-pencil" disabled="#{empty placesController.selectedItem or empty placesController.selectedItem.idPlace}" update=":form:dialogPlaces" process="placetable @this" oncomplete="dialogInfoPlaces.show()">
+                        <f:setPropertyActionListener target="#{placesController.newItem}" value="false" />
+                    </p:commandButton>
+                    <p:spacer width="2px"/>
+
+                    <p:commandButton icon="ui-icon-trash" disabled="#{empty placesController.selectedItem or empty placesController.selectedItem.idPlace}" onclick="confirmationPlace.show();" type="button" />
+                    <h:outputText value="|" />
+
+                    <p:commandButton icon="ui-icon-refresh" update="placetable" />
+
+                </h:panelGroup>
+
+            </f:facet>
+
+        </p:dataTable>
+
+    </h:body>
+</html>

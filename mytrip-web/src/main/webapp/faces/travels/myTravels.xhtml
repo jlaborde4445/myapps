@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <ui:composition template="/resources/templates/layout.xhtml">
+
+        <ui:param name="activeIndex" value="1" />
+
+        <ui:define name="content">
+
+            <p:spacer height="10px" />
+            
+            <p:panel header="Mis Viajes" toggleable="true" widgetVar="panelTravelWidget">
+            
+                <p:dataTable id="travelstable" var="travel" value="#{travelsController.travels}" paginator="true" rows="10" paginatorPosition="bottom" scrollHeight="80" scrollable="true"
+                             rowKey="#{travel.idTravel}" selection="#{travelsController.selectedItem}" selectionMode="single" paginatorAlwaysVisible="false">
+
+                    <p:ajax event="rowSelect" process="@this" update="footertable :form:itemsTravel" />
+
+                    <p:column width="35%">
+                        <f:facet name="header">
+                            <h:outputText value="Nombre del Viaje" />
+                        </f:facet>
+                        <h:outputText value="#{travel.name}" />
+                    </p:column>
+
+                    <p:column width="65%">
+                        <f:facet name="header">
+                            <h:outputText value="Descripción" />
+                        </f:facet>
+                        <h:outputText value="#{travel.description}" />
+                    </p:column>
+
+                    <f:facet name="footer">
+
+                        <h:panelGroup layout="block" id="footertable">
+
+                            <p:commandButton icon="ui-icon-plus" action="#{travelsController.createTravel()}" update=":form:dialog travelstable :form:itemsTravel" process="travelstable" oncomplete="dialogInfo.show()">
+                                <f:setPropertyActionListener target="#{travelsController.newItem}" value="true" />
+                                <p:resetInput target=":form:dialog" />
+                            </p:commandButton>
+                            <p:spacer width="2px"/>
+
+                            <p:commandButton icon="ui-icon-pencil" disabled="#{empty travelsController.selectedItem or empty travelsController.selectedItem.idTravel}" update=":form:dialog" process="travelstable @this" oncomplete="dialogInfo.show()">
+                                <f:setPropertyActionListener target="#{travelsController.newItem}" value="false" />
+                            </p:commandButton>
+
+                            <p:spacer width="2px"/>
+
+                            <p:commandButton icon="ui-icon-trash" disabled="#{empty travelsController.selectedItem or empty travelsController.selectedItem.idTravel}" onclick="confirmation.show();" type="button" />
+                            <h:outputText value="|" />
+
+                            <p:commandButton icon="ui-icon-refresh" process="@this" update="travelstable" />
+
+                        </h:panelGroup>
+
+                    </f:facet>
+
+                </p:dataTable>
+            
+                <p:dialog id="dialog" header="Información del Viaje" widgetVar="dialogInfo" resizable="false" showEffect="fade" modal="true">
+
+                    <h:panelGrid id="gridform" columns="2" cellpadding="5" rendered="#{not empty travelsController.selectedItem}">
+
+                        <p:outputLabel value="Nombre del Viaje" for="inputname" />
+                        <p:inputText id="inputname" value="#{travelsController.selectedItem.name}" required="true" style="width: 250px" maxlength="60" />
+
+                        <p:outputLabel value="Descripción" for="inputdescription" />
+                        <p:inputTextarea id="inputdescription" value="#{travelsController.selectedItem.description}" required="true" style="width: 250px" maxlength="255" counter="counter" counterTemplate="{0} caracteres restantes." />
+
+                        <p:spacer />
+                        <h:outputText id="counter" style="float: right;" />
+
+                    </h:panelGrid>
+
+                    <f:facet name="footer">
+
+                        <p:commandButton value="Confirmar" action="#{travelsController.saveTravel()}" update="travelstable gridform itemsTravel" process="dialog" />
+
+                        <p:commandButton value="Cancelar" onclick="dialogInfo.hide();" type="button" />
+
+                    </f:facet>
+
+                </p:dialog>
+
+                <p:confirmDialog id="confirmDialog" message="Está seguro que desea realizar esta acción?" header="Confirmación" severity="alert" widgetVar="confirmation">
+
+                    <p:commandButton value="Sí" process="@this" update="travelstable" oncomplete="confirmation.hide()" action="#{travelsController.deleteTravel()}" />
+
+                    <p:commandButton value="No" onclick="confirmation.hide();" type="button" /> 
+
+                </p:confirmDialog>
+                
+            </p:panel>
+            
+            <!-- Pages Icludes -->
+            <ui:include src="includes/travelsPlaces.xhtml" />
+            
+            <ui:include src="includes/travelsPlacesHotel.xhtml" />
+            
+            <ui:include src="includes/travelsPlacesTransport.xhtml" />
+            
+        </ui:define>
+
+    </ui:composition>
+    
+</html>

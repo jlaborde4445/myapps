@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:head>
+        <title>My Trip Web</title>
+        <h:outputStylesheet library="css" name="layout.css" />
+        <h:outputStylesheet library="css" name="components.css" />
+    </h:head>
+    <h:body>
+        <div class="container">
+            <!-- Start header -->
+            <div class="header ui-widget-header">
+                <div style="float: left">
+                    <span class="headerText">
+                        <h:graphicImage id="image" alt="Logo" library="images" name="icons/logo.png" height="36"/>
+                        My Trip Web
+                    </span>
+                </div>
+            </div>
+            <!-- Start content -->
+            <div class="content">
+                <pe:ajaxErrorHandler title="Error Interno" button="Recargar" />
+                
+                <h:form id="form-content" prependId="false">
+                    <p:growl id="msg" autoUpdate="true" />
+                    <div class="clear-box"/>
+                    <div class="ui-corner-all login-box">
+                        <p>Welcome to the My Trip Web Admin Console.</p>
+                        <p>Please login to proceed.</p>
+
+                        <h:panelGrid columns="2" cellpadding="5">
+                            <h:outputText value="Username: "/>
+                            <p:inputText value="#{loginController.username}" required="true" requiredMessage="Please enter a username and try again." />
+
+                            <h:outputText value="Password: "/>
+                            <p:inputText type="password" value="#{loginController.password}" required="true" requiredMessage="Please enter a password and try again." />
+
+                            <p:spacer/>
+                            <p:commandButton value="Login" action="#{loginController.checkAccess}" update="form-content" />
+                        </h:panelGrid>
+                    </div>
+                    <div class="clear-box"/>
+                </h:form>
+            </div>
+            <!-- Start footer -->
+            <div class="footer ui-widget-header">
+                <div class="footerText">
+                    My Trip Web / v 1.0 SNAPSHOT - Powered by <a href="http://www.jlaborde.com" title="Embedded by">Cacho</a>
+                    <br />
+                    © 2013-2013 JLABORDE.  All rights reserved.  Cacho is a registered.
+                </div>
+            </div>
+        </div>
+    </h:body>
+</html>

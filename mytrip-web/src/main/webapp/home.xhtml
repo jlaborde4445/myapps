@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/resources/templates/layout.xhtml">
+
+        <ui:define name="content">
+
+            <p:spacer height="10px" styleClass="block"/>
+
+            <p:panel header="My Trip" toggleable="true">
+                
+                <p:spacer height="10px" styleClass="block"/>
+
+                <h1>Bienvenidos a My Trip!!!</h1>
+
+                <h:outputText value="Aquí podrás ingresar tus destinos, vuelos, gastos y todo lo que tu deseas en un solo sitio." />
+                
+                <p:spacer height="10px" styleClass="block"/>
+
+                <h2>Lista de funcionalidades disponibles</h2>
+
+                <div id="list3">
+                    <ul>
+                        <li>Crear Usuarios</li>
+                        <li>Crear Destinos</li>
+                        <li>Crear Hoteles</li>
+                        <li>Diagramar Itinerarios</li>                   
+                    </ul>
+                </div>
+
+            </p:panel>
+
+        </ui:define>
+
+    </ui:composition>
+    
+</html>

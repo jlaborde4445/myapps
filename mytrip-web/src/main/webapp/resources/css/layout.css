@@ -1,0 +1,126 @@
+@CHARSET "UTF-8";
+
+html,body {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* needed for container min-height */
+    background-color: #dddddd;
+    font-family: "Lucida Grand", Verdana, Arial;
+    font-size: small;
+    color: #616161;
+    min-width: 1200px;
+}
+
+.ui-widget {
+    font-size: 12px !important;
+}
+
+h1, h2, h3 {
+    margin: 0px 20px 15px 5px;
+    font: normal 45px/1.2 'Bree Serif', Georgia, serif;
+    clear: left;
+}
+
+h2 {
+    font-size: 24px;
+    color: #8b2;
+}
+
+p {
+    line-height: 1.5;
+    margin: 0 0 1em;
+}
+
+div.container {
+    position: relative; /* needed for footer positioning*/
+    margin: 0 auto; /* center, not in IE5 */
+    width: 99.5%;
+    background: #f0f0f0;
+    height: auto !important; /* real browsers */
+    height: 100%; /* IE6: treaded as min-height*/
+    min-height: 100%; /* real browsers */
+}
+
+div.header {
+    color: #DDD;
+    border-bottom: 6px double gray;
+    height: 49px;
+}
+
+div.header .login {
+    padding-top: 5px;
+    margin-right: 20px;
+    text-align: right;
+    font-size: 11px;
+    line-height: 160%;
+}
+
+div.header p {
+    font-style: italic;
+    font-size: 1.1em;
+    margin: 0;
+}
+
+div.content-layout {
+    padding: 1em 1em 5em; /* bottom padding for footer */
+}
+
+div.content-layout p {
+    text-align: justify;
+    padding: 0 1em;
+}
+
+div.footer {
+    position: absolute;
+    width: 100%;
+    bottom: 0; /* stick to bottom */
+    border-top: 6px double gray;
+}
+
+div.footer p {
+    padding: 1em;
+    margin: 0;
+}
+
+.headerText {
+    font-size: 24px;
+    font-weight: normal;
+    color: #DDD;
+}
+
+.footerText{
+    color: #DBE7EE;
+    font-size: 9px;
+    text-align: center;
+}
+
+.clear-box{
+    padding-top: 80px;
+    display: block;
+}
+
+.ui-growl {
+    top: 60px !important;
+}
+
+/**Login CSS Layout **/
+
+.login-box{
+    margin: auto;
+    width: 260px;
+    padding: 30px 60px 30px 60px;
+    border: 2px solid;
+    border-color: #2A3B4E;
+}
+
+.login-box p {
+    font-size: large;
+}
+
+.ui-icon-download{
+    background-image: url("/mytrip/resources/images/icons/icon-download.png");
+}
+
+.ui-icon-delete{
+    background-image: url("/mytrip/resources/images/icons/icon-delete.png");
+}

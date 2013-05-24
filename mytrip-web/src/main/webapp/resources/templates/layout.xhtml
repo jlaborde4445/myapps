@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:fnc="http://cacho.com/functions">
+    <h:head>
+        <title>My Trip / Web</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet library="css" name="layout.css" />
+        <h:outputStylesheet library="css" name="components.css" />
+        <h:outputScript library="javascript" name="prime-utils.js" />
+        <h:outputScript library="javascript" name="primefaces/all-i18n.js" />
+        <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
+    </h:head>
+    <h:body>
+        <div class="container">
+            <!-- Start header -->
+            <div class="header ui-widget-header">
+                <div style="float: left">
+                    <span class="headerText">
+                        <h:graphicImage id="image" alt="Logo" library="images" name="icons/logo.png" height="36"/>
+                        My Trip Web
+                    </span>
+                </div>
+                <div class="login">
+                    Welcome #{fnc:remoteUser()} [<a href="#{facesContext.externalContext.requestContextPath}/logout.jsf" id="logoutLink">Logout</a>]
+                </div>
+            </div>
+            <!-- Start content -->
+            <div class="content-layout">
+                
+                <pe:ajaxErrorHandler title="Error Interno" button="Recargar" />
+                
+                <p:ajaxStatus onstart="statusDialog.show();" onsuccess="statusDialog.hide();"/>
+
+                <p:dialog modal="true" widgetVar="statusDialog" header="Aguarde un instante ..." draggable="false" closable="false" resizable="false">  
+                    <p:graphicImage library="images" name="icons/ajaxloadingbar.gif" />  
+                </p:dialog>
+                
+                <h:form id="form">
+                    <p:growl id="growl" showDetail="true" sticky="true" showSummary="false" autoUpdate="true" />
+
+                    <p:tabMenu activeIndex="#{activeIndex}">
+
+                        <p:menuitem value="Home" url="/home.jsf" icon="ui-icon-home" />
+
+                        <p:menuitem value="Mi Itinerario" url="/faces/travels/myTravels.jsf" icon="ui-icon-extlink" />
+                        
+                        <p:menuitem value="Mis Gastos" url="#" icon="ui-icon-document" />
+
+                        <p:menuitem  value="Configuraciones" url="/faces/config/config.jsf" icon="ui-icon-wrench" />
+
+                    </p:tabMenu>
+
+                    <ui:insert name="content">Content</ui:insert>
+                </h:form>
+            </div>
+            <!-- Start footer -->
+            <div class="footer ui-widget-header">
+                <div class="footerText">
+                    My Trip Web / v 1.0 SNAPSHOT - Powered by <a href="http://www.jlaborde.com" title="Embedded by">Cacho</a>
+                    <br />
+                    © 2013-2013 JLABORDE.  All rights reserved.  Cacho is a registered.
+                </div>
+            </div>
+        </div>
+    </h:body>
+</html>

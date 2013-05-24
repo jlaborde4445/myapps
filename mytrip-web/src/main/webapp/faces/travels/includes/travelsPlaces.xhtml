@@ -1,0 +1,175 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:fnc="http://cacho.com/functions">
+
+    <p:spacer height="20px" />
+
+    <h:panelGroup id="itemsTravel" layout="block">
+
+        <p:panel header="#{travelsController.selectedItem.name} - Itinerario" rendered="#{not (empty travelsController.selectedItem or empty travelsController.selectedItem.idTravel)}" toggleable="true">
+
+            <p:dataTable id="itemstable" var="item" value="#{travelsController.travelsPlaces}" paginator="true" rows="15" paginatorPosition="bottom" scrollHeight="200" scrollable="true"
+                         rowKey="#{item.id}" selection="#{travelsController.selectedItemPlace}" selectionMode="single" paginatorAlwaysVisible="false">
+
+                <p:ajax event="rowSelect" listener="#{travelsController.loadSelectPlace()}" onstart="panelTravelWidget.collapse();" process="@this" update="footeritem :form:itemsTravelHotel :form:itemsTravelTransport" partialSubmit="true" />
+
+                <p:column width="30%">
+                    <f:facet name="header">
+                        <h:outputText value="Lugar de Destino" />
+                        <p:spacer width="10px" />
+                        <p:graphicImage library="images" name="icons/arrow-in.png" />
+                    </f:facet>
+                    <h:outputText value="#{item.idPlaceArrival.country} - #{item.idPlaceArrival.place}" />
+                </p:column>
+                
+                <p:column width="30%">
+                    <f:facet name="header">
+                        <h:outputText value="Lugar de Partida" />
+                        <p:spacer width="10px" />
+                        <p:graphicImage library="images" name="icons/arrow-out.png" />
+                    </f:facet>
+                    <h:outputText value="#{item.idPlaceOutput.country} - #{item.idPlaceOutput.place}" />
+                </p:column>
+                
+                <p:column width="10%" styleClass="td-center">
+                    <f:facet name="header">
+                        <h:outputText value="Fecha de Partida" />
+                        <p:spacer width="10px" />
+                        <p:graphicImage library="images" name="icons/date.png" />
+                    </f:facet>
+                    <h:outputText value="#{item.startingDate}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"  />
+                    </h:outputText>
+                </p:column>
+
+                <p:column width="10%" styleClass="td-center">
+                    <f:facet name="header">
+                        <h:outputText value="Fecha de Arribo" />
+                        <p:spacer width="10px" />
+                        <p:graphicImage library="images" name="icons/date.png" />
+                    </f:facet>
+                    <h:outputText value="#{item.arrivalDate}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"  />
+                    </h:outputText>
+                </p:column>
+
+                 <p:column width="10%" styleClass="td-center">
+                    <f:facet name="header">
+                        <h:outputText value="Fecha de Salida" />
+                        <p:spacer width="10px" />
+                        <p:graphicImage library="images" name="icons/date.png" />
+                    </f:facet>
+                    <h:outputText value="#{item.outputDate}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+                
+                <p:column width="10%" styleClass="td-center">
+                    <f:facet name="header">
+                        <h:outputText value="C. Noches" />
+                        <p:spacer width="10px" />
+                        <p:graphicImage library="images" name="icons/night.png" />
+                    </f:facet>
+                    <h:outputText value="#{fnc:dateDiff(item.arrivalDate, item.outputDate)}" />
+                </p:column>
+                
+                <f:facet name="footer">
+
+                    <h:panelGroup layout="block" id="footeritem">
+
+                        <p:commandButton icon="ui-icon-plus" action="#{travelsController.createTravelPlace()}" update=":form:dialog2 itemstable :form:itemsTravelHotel" process="itemstable" oncomplete="dialogInfo2.show()">
+                            <f:setPropertyActionListener target="#{travelsController.newItemPlace}" value="true" />
+                            <p:resetInput target=":form:dialog2" />
+                        </p:commandButton>                                
+                        <p:spacer width="2px"/>
+
+                        <p:commandButton icon="ui-icon-pencil" disabled="#{empty travelsController.selectedItemPlace or empty travelsController.selectedItemPlace.id}" update=":form:dialog2" process="itemstable @this" oncomplete="dialogInfo2.show()">
+                            <f:setPropertyActionListener target="#{travelsController.newItemPlace}" value="false" />
+                        </p:commandButton>
+                        <p:spacer width="2px"/>
+
+                        <p:commandButton icon="ui-icon-trash"  disabled="#{empty travelsController.selectedItemPlace or empty travelsController.selectedItemPlace.id}" onclick="confirmation2.show();" type="button" />
+                        <h:outputText value="|" />
+
+                        <p:commandButton icon="ui-icon-refresh" process="@this" update="itemstable" />
+
+                    </h:panelGroup>
+
+                </f:facet>
+
+            </p:dataTable>
+
+            <p:dialog id="dialog2" header="Información del Lugar" widgetVar="dialogInfo2" resizable="false" showEffect="fade" modal="true">
+
+                <p:panelGrid id="gridform2" rendered="#{not empty travelsController.selectedItemPlace}">
+                    
+                    <p:row>
+                        <p:column colspan="2">
+                            <p:panel header="Desde">
+                                <h:panelGrid cellpadding="5" columns="2">
+                                    <p:outputLabel value="Lugar de Partida:" for="selectOutPalce" />
+                                    <p:selectOneMenu id="selectOutPalce" value="#{travelsController.selectedItemPlace.idPlaceOutput}" filter="true" filterMatchMode="contains" converter="entityConverter" styleClass="my-trip-with-med" required="true">
+                                        <f:selectItem itemValue="" itemLabel="Seleccione uno..." />
+                                        <f:selectItems value="#{requestController.getAllPlaces()}" var="place" itemValue="#{place}" itemLabel="#{place.country} - #{place.place}" />
+                                        <p:ajax process="selectOutPalce" update="selectInPalce" />
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Fecha de Partida:" for="dateStart" />
+                                    <p:calendar id="dateStart" value="#{travelsController.selectedItemPlace.startingDate}" readonlyInput="true" showButtonPanel="true" showOn="button" pattern="dd/MM/yyyy" required="true">
+                                        <p:ajax event="dateSelect" process="dateStart" update="dateIn dateOut" />
+                                    </p:calendar>
+                                    
+                                    <p:spacer height="30px" />
+                                </h:panelGrid>
+                            </p:panel>
+                        </p:column>
+                        <p:column colspan="2">
+                            <p:panel header="Hacia">
+                                <h:panelGrid cellpadding="5" columns="2">
+                                    <p:outputLabel value="Lugar de Destino:" for="selectInPalce" />
+                                    <p:selectOneMenu id="selectInPalce" value="#{travelsController.selectedItemPlace.idPlaceArrival}" filter="true" filterMatchMode="contains" converter="entityConverter" styleClass="my-trip-with-med" required="true">
+                                        <f:selectItem itemValue="" itemLabel="Seleccione uno..." />
+                                        <f:selectItems value="#{requestController.getPlacesWithOut(travelsController.selectedItemPlace.idPlaceOutput.idPlace)}" var="place" itemValue="#{place}" itemLabel="#{place.country} - #{place.place}" />
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Fecha de Arribo:" for="dateIn" />
+                                    <p:calendar id="dateIn" value="#{travelsController.selectedItemPlace.arrivalDate}" mindate="#{travelsController.selectedItemPlace.startingDate}" readonlyInput="true" showButtonPanel="true" showOn="button" pattern="dd/MM/yyyy" required="true">
+                                        <p:ajax event="dateSelect" process="dateIn" update="dateOut" />
+                                    </p:calendar>
+                                    
+                                    <p:outputLabel value="Fecha de Salida:" for="dateOut" />
+                                    <p:calendar id="dateOut" value="#{travelsController.selectedItemPlace.outputDate}" mindate="#{travelsController.selectedItemPlace.arrivalDate}" readonlyInput="true" showButtonPanel="true" showOn="button" pattern="dd/MM/yyyy" required="true" />
+                                </h:panelGrid>
+                            </p:panel>
+                        </p:column>
+                    </p:row>
+                    
+                </p:panelGrid>
+
+                <f:facet name="footer">
+
+                    <p:commandButton value="Confirmar" action="#{travelsController.saveTravelPlace()}" update=":form:itemstable gridform2" process="dialog2" />
+
+                    <p:commandButton value="Cancelar" onclick="dialogInfo2.hide();" type="button" />
+
+                </f:facet>
+
+            </p:dialog>
+            
+            <p:confirmDialog id="confirmDialog2" message="Está seguro que desea realizar esta acción?" header="Confirmación" severity="alert" widgetVar="confirmation2">
+
+                <p:commandButton value="Sí" process="@this" update="itemstable" oncomplete="confirmation2.hide()" action="#{travelsController.deleteTravelPlace()}" />
+
+                <p:commandButton value="No" onclick="confirmation2.hide();" type="button" /> 
+
+            </p:confirmDialog>
+
+        </p:panel>
+
+    </h:panelGroup>
+    
+</html>

@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:fnc="http://cacho.com/functions">
+    
+    <p:spacer height="20px" />
+
+    <h:panelGroup id="itemsTravelHotel" layout="block">
+
+        <p:panel id="panelHotelDetail" header="#{travelsController.selectedItemPlace.idPlaceArrival.place} - Mi Alojamiento" rendered="#{not (empty travelsController.selectedItemPlace or empty travelsController.selectedItemPlace.id) }" toggleable="true">
+
+            <h:panelGrid columns="11" cellpadding="5" rendered="#{not empty travelsController.selectedItemTravelPlaceHotel}">
+                
+                <p:outputLabel value="Hotel:" styleClass="text-bold" />
+                <h:outputText value="#{travelsController.selectedItemTravelPlaceHotel.idHotel.name}" />
+                
+                <p:spacer width="50" height="1"/>
+                
+                <p:outputLabel value="Dirección:" styleClass="text-bold" />
+                <h:outputText value="#{travelsController.selectedItemTravelPlaceHotel.idHotel.address}" />
+                
+                <p:spacer width="50" height="1"/>
+                
+                <p:outputLabel value="Check In:" styleClass="text-bold" />
+                <h:outputText value="#{travelsController.selectedItemTravelPlaceHotel.idHotel.timeFromCheckIn} - #{travelsController.selectedItemTravelPlaceHotel.idHotel.timeToCheckIn}" />
+                
+                <p:spacer width="50" height="1"/>
+                
+                <p:outputLabel value="Check Out:" styleClass="text-bold" />
+                <h:outputText value="#{travelsController.selectedItemTravelPlaceHotel.idHotel.timeFromCheckOut} - #{travelsController.selectedItemTravelPlaceHotel.idHotel.timeToCheckOut}" />
+                
+                <p:outputLabel value="Links:" styleClass="text-bold" />
+                <h:outputText value="#{fnc:splitLinks(travelsController.selectedItemTravelPlaceHotel.idHotel.link)}" escape="false" />
+                
+                <p:spacer width="50" height="1"/>
+                
+                <p:outputLabel value="Costo por Noche:" styleClass="text-bold" />
+                <h:outputText value="US$ #{travelsController.selectedItemTravelPlaceHotel.costPerNight}" />
+                
+                <p:spacer width="50" height="1"/>
+                
+                <p:outputLabel value="Porcentaje de Pago:" styleClass="text-bold" />
+                <h:outputText value="% #{travelsController.selectedItemTravelPlaceHotel.payoutPercentage}" />
+                
+                <p:spacer width="50" height="1"/>
+                
+                <p:outputLabel value="Descripción del Pago:" styleClass="text-bold" />
+                <h:outputText value="#{travelsController.selectedItemTravelPlaceHotel.paymentDescription}" />
+                
+                <p:outputLabel value="Ticket:" styleClass="text-bold" />
+                <p:commandButton ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthickstop-1-s" disabled="#{(empty travelsController.selectedItemTravelPlaceHotel) or (empty travelsController.selectedItemTravelPlaceHotel.ticket)}" immediate="true" process="@this">  
+                    <p:fileDownload value="#{travelsController.getFile()}" />  
+                </p:commandButton>
+                
+                <p:spacer width="50" height="1"/>
+                
+                <p:outputLabel value="Costo Total:" styleClass="text-bold" />
+                <h:outputText value="US$ #{travelsController.selectedItemTravelPlaceHotel.costPerNight * fnc:dateDiff(travelsController.selectedItemPlace.arrivalDate, travelsController.selectedItemPlace.outputDate)}" />
+                
+                <p:spacer width="50" height="1"/>
+                
+                <p:outputLabel value="Saldo de Pago:" styleClass="text-bold" />
+                <h:outputText value="US$ #{(travelsController.selectedItemTravelPlaceHotel.costPerNight * fnc:dateDiff(travelsController.selectedItemPlace.arrivalDate, travelsController.selectedItemPlace.outputDate)) - 
+                                           (travelsController.selectedItemTravelPlaceHotel.costPerNight * fnc:dateDiff(travelsController.selectedItemPlace.arrivalDate, travelsController.selectedItemPlace.outputDate) * (travelsController.selectedItemTravelPlaceHotel.payoutPercentage / 100))}" />
+                
+            </h:panelGrid>          
+            
+            <f:facet name="footer">
+                
+                <p:commandButton icon="ui-icon-plus" action="#{travelsController.createTravelPlaceHotel()}" process="@this" update="dialogHotel" oncomplete="dialogInfoHotel.show()" disabled="#{not empty travelsController.selectedItemTravelPlaceHotel}">
+                    <f:setPropertyActionListener target="#{travelsController.newItemPlaceHotel}" value="true" />
+                    <p:resetInput target="gridformHotel" />
+                </p:commandButton>
+                <p:spacer width="2px"/>
+                
+                <p:commandButton icon="ui-icon-pencil" disabled="#{empty travelsController.selectedItemTravelPlaceHotel or empty travelsController.selectedItemTravelPlaceHotel.id}" process="@this" update="dialogHotel" oncomplete="dialogInfoHotel.show()">
+                    <f:setPropertyActionListener target="#{travelsController.newItemPlaceHotel}" value="false" />
+                </p:commandButton>
+                <p:spacer width="2px"/>
+                
+                <p:commandButton icon="ui-icon-trash"  disabled="#{empty travelsController.selectedItemTravelPlaceHotel or empty travelsController.selectedItemTravelPlaceHotel.id}" onclick="confirmationHotel.show();" type="button" />
+                <h:outputText value="|" />
+                
+                <p:spacer width="2px"/>
+                <p:commandButton icon="ui-icon-document" process="@this" oncomplete="dialogFile.show()" disabled="#{empty travelsController.selectedItemTravelPlaceHotel}" />
+                
+            </f:facet>
+            
+        </p:panel>
+        
+        <p:dialog id="dialogHotel" header="Información del Alojamiento" widgetVar="dialogInfoHotel" resizable="false" showEffect="fade" modal="true">
+
+            <h:panelGrid id="gridformHotel" columns="2" cellpadding="5" rendered="#{not empty travelsController.selectedItemPlace}">
+
+                <p:outputLabel value="Hotel:" for="selectHotel" />
+                <p:selectOneMenu id="selectHotel" value="#{travelsController.selectedItemTravelPlaceHotel.idHotel}" filter="true" filterMatchMode="contains" converter="entityConverter" styleClass="my-trip-with-med" required="true">
+                    <f:selectItem itemValue="" itemLabel="Seleccione uno..." />
+                    <f:selectItems value="#{requestController.getHotelByPlace(travelsController.selectedItemPlace.idPlaceArrival)}" var="hotel" itemValue="#{hotel}" itemLabel="#{hotel.idHotel} - #{hotel.name}" />
+                </p:selectOneMenu>
+                
+                <p:outputLabel value="Costo x Noche:" for="inputCost" style="white-space: nowrap" />
+                <pe:inputNumber id="inputCost" value="#{travelsController.selectedItemTravelPlaceHotel.costPerNight}" symbol="US$ " decimalPlaces="2" thousandSeparator="" styleClass="my-trip-with-med" required="true">  
+                    <f:validateDoubleRange minimum="0"/>  
+                </pe:inputNumber>
+                
+                <p:outputLabel value="% de Pago:" />
+                <h:panelGrid columns="1" style="margin-bottom:10px">  
+                    <h:outputText id="output" value="Completado %#{travelsController.selectedItemTravelPlaceHotel.payoutPercentage}"/>  
+                    <h:inputHidden id="inputhidden" value="#{travelsController.selectedItemTravelPlaceHotel.payoutPercentage}" />  
+                    <p:slider for="inputhidden" display="output" style="width:200px" displayTemplate="Completado %{value}" />  
+                </h:panelGrid>
+                
+                <p:outputLabel value="Descripción:" for="inputdescriptionPayment" />
+                <p:inputTextarea id="inputdescriptionPayment" value="#{travelsController.selectedItemTravelPlaceHotel.paymentDescription}" style="width: 250px" maxlength="255" counter="counter2" counterTemplate="{0} caracteres restantes." />
+
+                <p:spacer />
+                <h:outputText id="counter2" style="float: right;" />
+                
+            </h:panelGrid>
+
+            <f:facet name="footer">
+
+                <p:commandButton value="Confirmar" action="#{travelsController.saveTravelPlaceHotel()}" update="gridformHotel" process="gridformHotel @this" partialSubmit="true" />
+
+                <p:commandButton value="Cancelar" onclick="dialogInfoHotel.hide();" type="button" />
+
+            </f:facet>
+
+        </p:dialog>
+        
+        <p:dialog id="dialogFileUpload" header="Ticket de Reserva" widgetVar="dialogFile" resizable="false" showEffect="fade" modal="true" width="500">
+            
+            <h:form enctype="multipart/form-data">  
+  
+                <p:fileUpload fileUploadListener="#{travelsController.handleFileUploadHotel}" mode="advanced" sizeLimit="500000" cancelLabel="Canelar" label="Seleccionar" uploadLabel="Subir" allowTypes="/(\.|\/)(pdf)$/" />  
+  
+            </h:form>
+            
+        </p:dialog>
+ 
+        <p:confirmDialog id="confirmDialogHotel" message="Está seguro que desea realizar esta acción?" header="Confirmación" severity="alert" widgetVar="confirmationHotel">
+
+            <p:commandButton value="Sí" process="@this" update="itemsTravelHotel" oncomplete="confirmationHotel.hide()" action="#{travelsController.deleteTravelPlaceHotel()}" />
+
+            <p:commandButton value="No" onclick="confirmationHotel.hide();" type="button" /> 
+
+        </p:confirmDialog>
+
+    </h:panelGroup>
+    
+</html>
